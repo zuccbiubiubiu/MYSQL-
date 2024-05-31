@@ -1,5 +1,5 @@
 # 增
-##INSERT
+## INSERT
 insert into student_info value('1018' , '赵六' , '2003-08-02' , '男');
 # 删
 # 改
