@@ -13,6 +13,9 @@ SELECT * FROM tanle LIMIT 0,5
 SELECT * FROM user LIMIT 1,3；
 ### 从第一条记录开始查（索引从0开始），查三条记录
 SELECT * FROM user LIMIT 3 OFFSET 1；
+## LIKE
+### 查询城市第一个字母为 "a"、"c "或 "s "的所有记录。
+SELECT * FROM Country WHERE City LIKE '[acs]%';
 # 函数
 ## coalesce [koʊˈæl.ɪs]
 ### 释义
