@@ -1,3 +1,50 @@
+- [小tips](#小tips)
+  - [学习资源](#学习资源)
+  - [单行注释](#单行注释)
+  - [多行注释](#多行注释)
+  - [内部注释](#内部注释)
+- [增](#增)
+  - [INSERT](#insert)
+    - [简单插入值](#简单插入值)
+    - [插入查询的值](#插入查询的值)
+- [删](#删)
+  - [删库](#删库)
+  - [删表](#删表)
+    - [普通删表的记录](#普通删表的记录)
+    - [普通删掉整个表](#普通删掉整个表)
+    - [快速删除整个表](#快速删除整个表)
+- [改](#改)
+  - [UPDATE](#update)
+  - [ALTER](#alter)
+    - [添加属性列](#添加属性列)
+    - [删除属性列](#删除属性列)
+    - [更改数据类型](#更改数据类型)
+    - [删除表中的某个列](#删除表中的某个列)
+    - [增加一列](#增加一列)
+- [查](#查)
+  - [LIMIT和OFFSET](#limit和offset)
+  - [LIKE](#like)
+  - [UNION](#union)
+  - [EXISTS](#exists)
+  - [CASE](#case)
+  - [IFNULL()](#ifnull)
+  - [coalesce](#coalesce)
+- [MYSQL 数据库](#mysql-数据库)
+  - [Constraints](#constraints)
+    - [属性值](#属性值)
+    - [语法](#语法)
+    - [要命名 UNIQUE 约束并在多个列上定义 UNIQUE 约束，请使用以下 SQL 语法：](#要命名-unique-约束并在多个列上定义-unique-约束请使用以下-sql-语法)
+    - [PRIMARY KEY](#primary-key)
+      - [创建 "Persons "表时，以下 SQL 将在 "ID "列上创建 PRIMARY KEY：](#创建-persons-表时以下-sql-将在-id-列上创建-primary-key)
+      - [要对 PRIMARY KEY 约束进行命名，并在多个列上定义 PRIMARY KEY 约束，请使用以下 SQL 语法：](#要对-primary-key-约束进行命名并在多个列上定义-primary-key-约束请使用以下-sql-语法)
+      - [要在已创建表格的情况下为 "ID "列创建 PRIMARY KEY 约束，请使用以下 SQL:](#要在已创建表格的情况下为-id-列创建-primary-key-约束请使用以下-sql)
+    - [FOREIGN KEY](#foreign-key)
+      - [释义](#释义)
+    - [CHECK](#check)
+      - [释义](#释义-1)
+  - [INDEX](#index)
+  - [AUTO_INCREMENT](#auto_increment)
+
 # 小tips
 ## 学习资源
 W3school(https://www.w3schools.com/) 该笔记的大部分知识来源于此
@@ -210,9 +257,58 @@ ALTER TABLE Persons
 ADD PRIMARY KEY (ID);
 ```
 ### FOREIGN KEY
+#### 释义
 >FOREIGN KEY 约束用于防止破坏表之间链接的操作。 FOREIGN KEY 是一个表中的字段（或字段集合），它指向另一个表中的主键。 具有外键的表称为子表，具有主键的表称为引用表或父表。
 
 ![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/2f6bfa74-ff8e-4d29-b008-9cf249c006b4)
+>上表中，"订单 "表中的 "PersonID "列指向 "人员 "表中的 "PersonID "列。 人员 "表中的 "PersonID "列是 "人员 "表中的 PRIMARY KEY。 订单 "表中的 "PersonID "列是 "订单 "表中的 FOREIGN KEY。 FOREIGN KEY 约束可以防止向外键列插入无效数据，因为它必须是父表中包含的值之一。
+#### 创建 "订单 "表时，以下 SQL 将在 "PersonID "列上创建一个 FOREIGN KEY：
+```sql
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+);
+```
+#### 要对 FOREIGN KEY 约束进行命名，并在多个列上定义 FOREIGN KEY 约束，请使用以下 SQL 语法：
+```sql
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID)
+    REFERENCES Persons(PersonID)
+);
+```
+### CHECK
+#### 释义
+>CHECK 约束用于限制列的取值范围。 如果在列上定义了 CHECK 约束，该列将只允许某些值。 如果在表上定义了 CHECK 约束，则可以根据行中其他列的值来限制某些列的值。
+####
+创建 "人员 "表时，下面的 SQL 将在 "年龄 "列上创建 CHECK 约束。 该 CHECK 约束确保个人的年龄必须是 18 岁或以上：
+```sql
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CHECK (Age>=18)
+);
+```
+## INDEX
+### 在表上创建索引。 允许重复值：
+```sql
+CREATE INDEX index_name
+ON table_name(column1,column2,...)
+```
+### 在表上创建唯一索引
+```sql
+CREATE UNION index_name
+ON table1(column1,column2)
+```
+## AUTO_INCREMENT
 
 
 
