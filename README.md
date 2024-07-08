@@ -1,6 +1,6 @@
 # 小tips
 ## 学习资源
-W3school(https://www.w3schools.com/)——该笔记的大部分知识来源于此
+W3school(https://www.w3schools.com/) 该笔记的大部分知识来源于此
 ## 单行注释
 ```sql
 -- Select all:
@@ -211,6 +211,7 @@ ADD PRIMARY KEY (ID);
 ```
 ### FOREIGN KEY
 >FOREIGN KEY 约束用于防止破坏表之间链接的操作。 FOREIGN KEY 是一个表中的字段（或字段集合），它指向另一个表中的主键。 具有外键的表称为子表，具有主键的表称为引用表或父表。
+
 ![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/2f6bfa74-ff8e-4d29-b008-9cf249c006b4)
 
 
