@@ -351,7 +351,7 @@ ALTER TABLE Persons AUTO_INCREMENT=100;
 ![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/07b8d3db-0dd0-4fed-9cd6-9f3774835ac7)
 ![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/aa251f44-96c9-47e8-a2ec-d498e8f92cae)
 所以最好不要加入时间部分
-# 窗口函数 (OLAP函数（Online Anallytical Processing，联机分析处理）)
+# 窗口函数 
 ## 语法
 ><窗口函数>over(partition by 分组字段 order by 排序字段)
 >注：分组和排序字段不是必须项，视问题情况而定
