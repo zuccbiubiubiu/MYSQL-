@@ -26,7 +26,7 @@
   - [AUTO_INCREMENT](#auto_increment)
   - [DATES](#DATES)
 - [窗口函数](#窗口函数)
-  - [语法](#语法)
+  - [语法](#窗口函数语法)
   - [种类](#种类)
 
 # 小tips
