@@ -5,22 +5,12 @@
   - [内部注释](#内部注释)
 - [增](#增)
   - [INSERT](#insert)
-    - [简单插入值](#简单插入值)
-    - [插入查询的值](#插入查询的值)
 - [删](#删)
   - [删库](#删库)
   - [删表](#删表)
-    - [普通删表的记录](#普通删表的记录)
-    - [普通删掉整个表](#普通删掉整个表)
-    - [快速删除整个表](#快速删除整个表)
 - [改](#改)
   - [UPDATE](#update)
   - [ALTER](#alter)
-    - [添加属性列](#添加属性列)
-    - [删除属性列](#删除属性列)
-    - [更改数据类型](#更改数据类型)
-    - [删除表中的某个列](#删除表中的某个列)
-    - [增加一列](#增加一列)
 - [查](#查)
   - [LIMIT和OFFSET](#limit和offset)
   - [LIKE](#like)
@@ -31,17 +21,6 @@
   - [coalesce](#coalesce)
 - [MYSQL 数据库](#mysql-数据库)
   - [Constraints](#constraints)
-    - [属性值](#属性值)
-    - [语法](#语法)
-    - [要命名 UNIQUE 约束并在多个列上定义 UNIQUE 约束，请使用以下 SQL 语法：](#要命名-unique-约束并在多个列上定义-unique-约束请使用以下-sql-语法)
-    - [PRIMARY KEY](#primary-key)
-      - [创建 "Persons "表时，以下 SQL 将在 "ID "列上创建 PRIMARY KEY：](#创建-persons-表时以下-sql-将在-id-列上创建-primary-key)
-      - [要对 PRIMARY KEY 约束进行命名，并在多个列上定义 PRIMARY KEY 约束，请使用以下 SQL 语法：](#要对-primary-key-约束进行命名并在多个列上定义-primary-key-约束请使用以下-sql-语法)
-      - [要在已创建表格的情况下为 "ID "列创建 PRIMARY KEY 约束，请使用以下 SQL:](#要在已创建表格的情况下为-id-列创建-primary-key-约束请使用以下-sql)
-    - [FOREIGN KEY](#foreign-key)
-      - [释义](#释义)
-    - [CHECK](#check)
-      - [释义](#释义-1)
   - [INDEX](#index)
   - [AUTO_INCREMENT](#auto_increment)
 
@@ -105,11 +84,6 @@ UPDATE table_name SET field1 = new-value1, field2 = new-value2 [WHERE Clause];
 ```sql
 ALTER TABLE table1 ADD columns1 DATE(数据类型)
 ```
-### 删除属性列
-```sql
-ALTER TABLE table1
-DROP COLUMN columns1
-```
 ### 更改数据类型
 ```sql
 ALTER TABLE table1
@@ -120,9 +94,6 @@ MODIFY COLUMN columns1 YEAR
 ALTER TABLE table1
 DROP COLUMN columns1
 ```
-### 增加一列
-ALTER TABLE Persons
-ADD DateOfBirth date;
 # 查
 ## LIMIT和OFFSET
 ### 从第一个索引开始查（索引从0开始），查三条记录
@@ -309,6 +280,117 @@ CREATE UNION index_name
 ON table1(column1,column2)
 ```
 ## AUTO_INCREMENT
+### 以下 SQL 语句将 "Personid "列定义为 "Persons "表中的自动递增主键字段：
+```sql
+CREATE TABLE Persons (
+    Personid int NOT NULL AUTO_INCREMENT,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    PRIMARY KEY (Personid)
+);
+```
+### 要让 AUTO_INCREMENT 序列从另一个值开始，请使用以下 SQL 语句：
+```sql
+ALTER TABLE Persons AUTO_INCREMENT=100;
+```
+## DATES
+### 种类
+- DATE  format YYYY-MM-DD
+- DATETIME  format: YYYY-MM-DD HH:MI:SS
+- TIMESTAMP  format: YYYY-MM-DD HH:MI:SS
+- YEAR  format YYYY or YY
+### 注意点
+![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/07b8d3db-0dd0-4fed-9cd6-9f3774835ac7)
+![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/aa251f44-96c9-47e8-a2ec-d498e8f92cae)
+所以最好不要加入时间部分
+# 窗口函数 (OLAP函数（Online Anallytical Processing，联机分析处理）)
+## 语法
+><窗口函数>over(partition by 分组字段 order by 排序字段)
+>注：分组和排序字段不是必须项，视问题情况而定
+## 种类
+- 聚合窗口函数 avg、sum、count、max、min等
+- 排序窗口函数是rank、dense_rank、row_number
+- 偏移窗口函数是lag、lead
+### 聚合函数
+#### 实例
+- **找出某产品线活跃用户数比产品组内平均活跃用户数多的日期**
+![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/4e9ceffb-4722-4c80-8dee-b611ee1071d0)
+#### 第一步 先根据日期和产品线分组，计算某天某产品线的活跃用户数
+```sql
+select concat(substr(dt,1,4),'-',substr(dt,5,2),'-',substr(dt,7,2)) as stat_date
+      ,product_id
+      ,count(distinct user_id) as active_user_num
+from user_log
+where dt between '20230404' and '20230430'
+and product_id is not null
+group by stat_date,product_id
+```
+#### 第二步 用avg窗口函数求产品线组内该段时间的平均活跃用户数
+```sql
+select *
+      ,round(avg(active_user_num)over(partition by product_id),2) as avg_active_user_num  --切记要用产品分组
+from 
+(
+    select concat(substr(dt,1,4),'-',substr(dt,5,2),'-',substr(dt,7,2)) as stat_date
+          ,product_id
+          ,count(distinct user_id) as active_user_num
+    from user_log
+    where dt between '20230404' and '20230430'
+    and product_id is not null
+    group by stat_date,product_id
+) as t1
+```
+#### 第三步过滤出active_user_num≥avg_active_user_num行记录
+```sql
+select stat_date
+      ,product_id
+      ,active_user_num
+      ,avg_active_user_num
+from 
+(
+    select *
+          ,round(avg(active_user_num)over(partition by product_id),2) as avg_active_user_num
+    from 
+    (
+        select concat(substr(dt,1,4),'-',substr(dt,5,2),'-',substr(dt,7,2)) as stat_date
+              ,product_id
+              ,count(distinct user_id) as active_user_num
+        from user_log
+        where dt between '20230404' and '20230430'
+        and product_id is not null
+        group by stat_date,product_id
+    ) as t1
+) as t2
+where active_user_num>=avg_active_user_num  --关键条件
+order by product_id,stat_date
+```
+- **累计求和**
+```sql
+select *
+      ,sum(active_cnt)over(partition by product_id order by stat_date) as acc_active_cnt
+      --有排序，得出的是累计求和，无排序，得出的是组内总和
+      ,sum(active_cnt)over(partition by product_id) as sum_active_cnt
+from 
+(
+    select concat(substr(dt,1,4),'-',substr(dt,5,2),'-',substr(dt,7,2)) as stat_date
+          ,product_id
+          ,count(user_id) as active_cnt
+    from user_log
+    where dt between '20230404' and '20230430'
+    and product_id is not null
+    group by stat_date,product_id
+) as t1
+```
+### 排序窗口函数
+#### 区分
+- rank：值相等时会重复，会产生空位，比如某列有13，12，12，11这4个数，用rank排序该列时，排序结果为1、2、2、4
+- dense_rank：值相等时会重复，不会产生空位，还是上面的例子，用dense_rank排序该列时，排序结果为1、2、2、3
+- row_number：值相等时不会重复，不会产生空位，还是上面的例子，用row_number排序该列时，排序结果为1、2、3、4
+#### 实例
+详见该文(https://zhuanlan.zhihu.com/p/629460362)
+
+
 
 
 
