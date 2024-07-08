@@ -1,13 +1,19 @@
 # 增
 ## INSERT
 ### 简单插入值
-`insert into student_info value('1018' , '赵六' , '2003-08-02' , '男');`
+```sql
+insert into student_info value('1018' , '赵六' , '2003-08-02' , '男');
+```
 ### 插入查询的值
-`INSERT INTO Customers (CustomerName, City, Country)
-SELECT SupplierName, City, Country FROM Suppliers;`
+```sql
+INSERT INTO Customers (CustomerName, City, Country)
+SELECT SupplierName, City, Country FROM Suppliers;
+```
 # 删
 ## 删库
-`DROP database testDB`
+```sql
+DROP database testDB`
+```
 ## 删表
 ### 普通删表的记录
 `DELETE FROM table1`
@@ -48,22 +54,24 @@ UNION ALL
 SELECT column_name(s) FROM table2;`
 ## EXISTS
 ### 返回 TRUE，并列出产品价格小于 20 的供应商
-`SELECT SupplierName
+```sql
+SELECT SupplierName
 FROM Suppliers
-WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);`
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
+```
 ## CASE
 ### 释义
 >CASE 语句通过条件，并在满足第一个条件时返回一个值（就像 if-then-else 语句）。 因此，一旦某个条件为真，它就会停止读取并返回结果。 
 如果没有条件为真，则返回 ELSE 子句中的值。 如果没有 ELSE 部分，也没有条件为真，则返回 NULL。
 ###  下面的 SQL 语句通过条件，并在满足第一个条件时返回一个值：
 ```sql
-`SELECT OrderID, Quantity,`
-`CASE`
-    `WHEN Quantity > 30 THEN 'The quantity is greater than 30'`
-    `WHEN Quantity = 30 THEN 'The quantity is 30'`
-    `ELSE 'The quantity is under 30'`
-`END AS QuantityText`
-`FROM OrderDetails;`
+SELECT OrderID, Quantity,
+CASE
+    WHEN Quantity > 30 THEN 'The quantity is greater than 30'
+    WHEN Quantity = 30 THEN 'The quantity is 30'
+    ELSE 'The quantity is under 30'
+END AS QuantityText
+FROM OrderDetails;
 ```
 # 函数
 ## coalesce [koʊˈæl.ɪs]
