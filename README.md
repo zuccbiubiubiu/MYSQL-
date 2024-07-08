@@ -1,27 +1,27 @@
 # 增
 ## INSERT
 ### 简单插入值
-insert into student_info value('1018' , '赵六' , '2003-08-02' , '男');
+`insert into student_info value('1018' , '赵六' , '2003-08-02' , '男');`
 ### 插入查询的值
-INSERT INTO Customers (CustomerName, City, Country)
-SELECT SupplierName, City, Country FROM Suppliers;
+`INSERT INTO Customers (CustomerName, City, Country)
+SELECT SupplierName, City, Country FROM Suppliers;`
 # 删
 ## 删库
-DROP database testDB
+`DROP database testDB`
 ## 删表
 ### 普通删表的记录
-DELETE FROM table1
+`DELETE FROM table1`
 ### 普通删掉整个表
-DROP table table2
+`DROP table table2`
 ### 快速删除整个表
-TRUNCATE TABLE table3
+`TRUNCATE TABLE table3`
 ### 删除表中的某个列
-ALTER TABLE table1 DROP COLUMN columns1
+`ALTER TABLE table1 DROP COLUMN columns1`
 # 改
 ## UPDATE
-UPDATE table_name SET field1 = new-value1, field2 = new-value2 [WHERE Clause];
+`UPDATE table_name SET field1 = new-value1, field2 = new-value2 [WHERE Clause];`
 ## ALTER
-ALTER TABLE table1 ADD columns1 DATE(数据类型)
+`ALTER TABLE table1 ADD columns1 DATE(数据类型)`
 # 查
 ## 查询前五条记录
 SELECT * FROM tanle LIMIT 0,5
