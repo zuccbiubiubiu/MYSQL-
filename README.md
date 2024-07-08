@@ -56,13 +56,13 @@ WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppl
 >CASE 语句通过条件，并在满足第一个条件时返回一个值（就像 if-then-else 语句）。 因此，一旦某个条件为真，它就会停止读取并返回结果。 
 如果没有条件为真，则返回 ELSE 子句中的值。 如果没有 ELSE 部分，也没有条件为真，则返回 NULL。
 ###  下面的 SQL 语句通过条件，并在满足第一个条件时返回一个值：
-`SELECT OrderID, Quantity,
-CASE
-    WHEN Quantity > 30 THEN 'The quantity is greater than 30'
-    WHEN Quantity = 30 THEN 'The quantity is 30'
-    ELSE 'The quantity is under 30'
-END AS QuantityText
-FROM OrderDetails;`
+`SELECT OrderID, Quantity,`
+`CASE`
+    `WHEN Quantity > 30 THEN 'The quantity is greater than 30'`
+    `WHEN Quantity = 30 THEN 'The quantity is 30'`
+    `ELSE 'The quantity is under 30'`
+`END AS QuantityText`
+`FROM OrderDetails;`
 
 # 函数
 ## coalesce [koʊˈæl.ɪs]
