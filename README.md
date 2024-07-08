@@ -19,10 +19,15 @@
   - [CASE](#case)
   - [IFNULL()](#ifnull)
   - [coalesce](#coalesce)
+  - [REGEXP](#REGEXP)
 - [MYSQL 数据库](#mysql-数据库)
   - [Constraints](#constraints)
   - [INDEX](#index)
   - [AUTO_INCREMENT](#auto_increment)
+  - [DATES](#DATES)
+-[窗口函数](#窗口函数)
+  -[语法](#语法)
+  -[种类](#种类)
 
 # 小tips
 ## 学习资源
@@ -141,6 +146,36 @@ SELECT SupplierName
 FROM Suppliers
 WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
 ```
+### 编写解决方案，报告购买了产品 "A"，"B" 但没有购买产品 "C" 的客户的 customer_id 和 customer_name
+```sql
+法一
+SELECT c.customer_id, c.customer_name
+FROM Customers c
+WHERE EXISTS (
+    SELECT 1
+    FROM Orders o
+    WHERE o.customer_id = c.customer_id AND o.product_name = 'A'
+)
+AND EXISTS (
+    SELECT 1
+    FROM Orders o
+    WHERE o.customer_id = c.customer_id AND o.product_name = 'B'
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM Orders o
+    WHERE o.customer_id = c.customer_id AND o.product_name = 'C'
+);
+法二
+SELECT o.customer_id, c.customer_name
+FROM Orders o
+LEFT JOIN Customers c ON o.customer_id = c.customer_id
+GROUP BY o.customer_id
+HAVING 
+    SUM(IF(product_name = 'A', 1, 0)) > 0 AND
+    SUM(IF(product_name = 'B', 1, 0)) > 0 AND
+    SUM(IF(product_name = 'C', 1, 0)) = 0
+```
 ## CASE
 ### 释义
 >CASE 语句通过条件，并在满足第一个条件时返回一个值（就像 if-then-else 语句）。 因此，一旦某个条件为真，它就会停止读取并返回结果。 
@@ -173,6 +208,18 @@ FROM Products;
 ```sql
 SELECT COALESCE(column1, column2, column3) FROM table_name;
 ```
+## REGEXP(正则表达式)
+- ^ 匹配输入字符串的开始位置。如果设置了 RegExp 对象的 Multiline 属性，^ 也匹配 '\n' 或 '\r' 之后的位置。
+查找 name 字段中以 'st' 为开头的所有数据：
+```sql
+SELECT name FROM person_tbl WHERE name REGEXP '^st';
+```
+- $ 匹配输入字符串的结束位置。如果设置了RegExp 对象的 Multiline 属性，$ 也匹配 '\n' 或 '\r' 之前的位置。
+查找 name 字段中以 'os' 为开头的所有数据：
+```sql
+SELECT name FROM person_tbl WHERE name REGEXP 'os$';
+```
+还有更多的REGEXP操作符设置，详见菜鸟教程(https://www.runoob.com/mysql/mysql-regexp.html)
 # MYSQL 数据库
 ## Constraints 
 ### 属性值
