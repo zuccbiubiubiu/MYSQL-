@@ -429,6 +429,17 @@ from
     group by stat_date,product_id
 ) as t1
 ```
+- **leetcode1112 找出每位学生获得的最高成绩和它所对应的科目，若科目成绩并列，取 course_id 最小的一门。查询结果需按 student_id 增序进行排序**
+```sql
+SELECt student_id ,course_id ,grade FROM (SELECT student_id ,course_id ,grade ,MIN(course_id)OVER (PARTITION BY student_id) AS MINcourse FROM (SELECT student_id ,course_id ,MAX(grade)OVER(PARTITION BY student_id ) AS MAXgrade
+,grade  FROM Enrollments ) AS A
+WHERE grade=MAXgrade ) AS B
+WHERE course_id =MINcourse 
+```
+- 收获
+>窗口函数的结果是在查询的最后阶段产生的，故无法在同一个子查询中用where调用窗口函数结果
+>MYSQL中 WHERE的比较是逐行比较，比如WHERE course_id =MINcourse 就是找每一行里course_id和MINcourse相等的记录
+>更好的方法应该是排序，见排序窗口函数
 ### 排序窗口函数
 #### 区分
 - rank：值相等时会重复，会产生空位，比如某列有13，12，12，11这4个数，用rank排序该列时，排序结果为1、2、2、4
@@ -436,6 +447,19 @@ from
 - row_number：值相等时不会重复，不会产生空位，还是上面的例子，用row_number排序该列时，排序结果为1、2、3、4
 #### 实例
 详见该文(https://zhuanlan.zhihu.com/p/629460362)
+- **leetcode1112 找出每位学生获得的最高成绩和它所对应的科目，若科目成绩并列，取 course_id 最小的一门。查询结果需按 student_id 增序进行排序**
+```sql
+select student_id, course_id, grade
+from (
+    select student_id, course_id, grade,
+    rank() over (partition by student_id order by grade desc, course_id asc ) as ranking
+    from Enrollments
+) t1
+where ranking = 1
+order by student_id
+```
+>直接用排序窗口函数，就可以很快的得到结果
+
 
 
 
