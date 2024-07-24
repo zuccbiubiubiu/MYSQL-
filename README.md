@@ -220,6 +220,36 @@ SELECT name FROM person_tbl WHERE name REGEXP '^st';
 SELECT name FROM person_tbl WHERE name REGEXP 'os$';
 ```
 还有更多的REGEXP操作符设置，详见菜鸟教程(https://www.runoob.com/mysql/mysql-regexp.html)
+## 分区查询
+>就是把一张表的数据分成N个区块，在逻辑上看最终只是一张表，但底层是由N个物理区块组成的，例如 有个以时间为记录 ，大约有10年的数据集，可以已年划分为10个分区，每个分区包含的是其中一年的记录（注：一定要通过某个属性列来分割，譬如这里使用的列就是年份）
+### 类型
+**RANGE**
+>基于属于一个给定连续区间的列值，把多行分配给分区
+**LIST**
+>类似于按RANGE分区，区别在于LIST分区是基于列值匹配一个离散值集合中的某个值来进行选择
+**HASH**
+>基于用户定义的表达式的返回值来进行选择的分区，该表达式使用将要插入到表中的这些行的列值进行计算。这个函数可以包含MySQL 中有效的、产生非负整数值的任何表达式。
+KEY
+>类似于按HASH分区，区别在于KEY分区只支持计算一列或多列，且MySQL服务器提供其自身的哈希函数。必须有一列或多列包含整数值
+### 具体实例
+>对于RANGE
+(1) 新建表
+>被分区的列必须在主键里
+```sql
+CREATE TABLE range1 (
+    id INT AUTO_INCREMENT,
+    name VARCHAR(255),
+    time INT NOT NULL,
+    PRIMARY KEY (id,time)
+)
+PARTITION BY RANGE(time) (
+    PARTITION p0 VALUES LESS THAN (2020),
+    PARTITION p1 VALUES LESS THAN (2021),
+    PARTITION p2 VALUES LESS THAN MAXVALUE
+);
+```
+(2) 已经有数据表，再分区
+
 # MYSQL 数据库
 ## Constraints 
 ### 属性值
@@ -351,6 +381,7 @@ ALTER TABLE Persons AUTO_INCREMENT=100;
 ![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/07b8d3db-0dd0-4fed-9cd6-9f3774835ac7)
 ![image](https://github.com/zuccbiubiubiu/MYSQL-/assets/111670275/aa251f44-96c9-47e8-a2ec-d498e8f92cae)
 所以最好不要加入时间部分
+
 # 窗口函数 
 ## 窗口函数语法
 ><窗口函数>over(partition by 分组字段 order by 排序字段)
@@ -459,6 +490,8 @@ where ranking = 1
 order by student_id
 ```
 >直接用排序窗口函数，就可以很快的得到结果
+
+
 
 
 
