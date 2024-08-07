@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "rpa-data-acquisition",
+			"path": "../../rpa-data-acquisition"
+		}
+	],
+	"settings": {}
+}
